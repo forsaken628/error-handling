@@ -2,6 +2,7 @@
 
 这个方案叫左值宏，是一个易于阅读，易于理解，易于实现，且非常通用的方案。
 
+### 宏定义与展开
 ```go
 func Bar1() (int, error)
 
@@ -48,6 +49,7 @@ func Far() error {
 }
 ```
 
+### 不限于error interface的形式
 ```go
 	// 不限于error interface的形式，也可以用于其他错误处理的形式，如bool
 	ok! bool {
@@ -63,8 +65,8 @@ func Far() error {
 	s += a
 ```
 
+### 不限于错误处理的场景
 ```go
-	// 也不限于错误处理
 	var ls []int
 	item! int {
 		if i % 2 == 0 {
@@ -80,5 +82,29 @@ func Far() error {
 	// ls == []int{2,4}
 ```
 
-不支持闭包，相互嵌套，goto，顶层continue，顶层break，Label 等
-仅仅只是一个语法糖
+### 同一行中包含多个宏
+```go
+	i! int {
+		fmt.Println(i)
+	}
+	i!,i!,i! = 1,2,3
+	/*
+	var _i0,_i1,_i2 int
+	_i0,_i1,_i2 = 1,2,3
+	{
+		var i = _i2 // 同一行中包含多个宏，从右向左展开
+		fmt.Println(i)
+	}
+	{
+		var i = _i1
+		fmt.Println(i)
+	}
+	{
+		var i = _i0
+		fmt.Println(i)
+	}
+	*/
+```
+
+### 总结
+不支持闭包，相互嵌套，goto，顶层continue，顶层break，Label 等，仅仅只是一个简化重复语句的语法糖
