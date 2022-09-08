@@ -18,7 +18,6 @@ func Far() error {
 	}
 
 	b1, err! := Bar1()
-	b2, err! := Bar1()
 	_, err! = Bar1()
 
 	/* 宏展开后
@@ -31,7 +30,7 @@ func Far() error {
 		}
 	}
 	var _err1 error
-	b2, _err1 := Bar1()
+	_, _err1 = Bar1()
 	{
 		var err error = _err0
 		if err != nil {
@@ -41,7 +40,6 @@ func Far() error {
 	*/
 
 	_=b1
-	_=b2
 
 	// 行为非常类似闭包函数，仅仅只是提供了令外层函数return的能力
 
@@ -92,7 +90,7 @@ func Far() error {
 	var _i0,_i1,_i2 int
 	_i0,_i1,_i2 = 1,2,3
 	{
-		var i = _i2 // 同一行中包含多个宏，从右向左展开
+		var i = _i2 // 同一行中包含多个宏，从右向左展开。或者这是一个不好的写法，不应该支持？
 		fmt.Println(i)
 	}
 	{
