@@ -101,5 +101,24 @@ func Far() error {
 	*/
 ```
 
+### Return wrapped error
+```go
+	// May not need adjustment, old form is clear. 
+	b1, err := Bar1()
+	if err!= nil { return fmt.Errorf("fail %s: %w", "b1", err) }
+```
+```go
+	// Or declare a function-scoped variable.
+	errMsg := ""
+	err! error {
+	    if err != nil {
+	        return fmt.Errorf("fail %s: %w", errMsg, err)
+	    }
+	}
+
+	// Why must cram everything into one line?
+	errMsg = "b1"
+	b1, err! := Bar1()
+```
 ### Other
 Does not support closures, nesting, goto, top-level continue, top-level break, Label, etc., just a syntactic sugar to simplify repeated statements
