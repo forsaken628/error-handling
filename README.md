@@ -1,16 +1,13 @@
-用宏来简化go的错误处理是不同于常见错误处理提案的新思路。
+# Left Value Macro
+easy-to-read, easy-to-understand, easy-to-implement, and very general proposal.
 
-这个方案叫左值宏，是一个易于阅读，易于理解，易于实现，且非常通用的方案。
-
-### 宏定义与展开
+### Macro definition and expansion
 ```go
 func Bar1() (int, error)
 
 func Far() error {
-	// 左值宏
-
-	// 宏定义，err是宏名称，!标识这是一个宏。err同时也是关联变量的名称，（出于简单性）。
-	// 仅支持关联单一变量，且必须显式指定变量类型
+	// definition, use 'err' as macro name, also variable name.
+	// Only a single variable is supported, and the variable type must be specified explicitly
 	err! error {
 	    if err != nil {
 	        return err
@@ -20,8 +17,8 @@ func Far() error {
 	b1, err! := Bar1()
 	_, err! = Bar1()
 
-	/* 宏展开后
-	var _err0 error // 每次调用宏会关联到一个独立的变量上，作用域限于宏内部
+	/* expansion
+	var _err0 error // Each call to the macro is associated with a separate variable, and the scope is limited to the inside of the macro
 	b1, _err0 := Bar1()
 	{
 		var err error = _err0
@@ -41,15 +38,15 @@ func Far() error {
 
 	_=b1
 
-	// 行为非常类似闭包函数，仅仅只是提供了令外层函数return的能力
+	// The behavior is very similar to the closure function, but only provides the ability to make the outer function return
 
 	return nil
 }
 ```
 
-### 不限于error interface的形式
+### Not limited to the form of error interface
 ```go
-	// 不限于error interface的形式，也可以用于其他错误处理的形式，如bool
+	// Not limited to the form of error interface, it can also be used in other forms of error handling, such as bool
 	ok! bool {
 	    if !ok {
 	        return errors.New("not found")
@@ -63,7 +60,7 @@ func Far() error {
 	s += a
 ```
 
-### 不限于错误处理的场景
+### Not limited to error handling scenarios
 ```go
 	var ls []int
 	item! int {
@@ -80,7 +77,7 @@ func Far() error {
 	// ls == []int{2,4}
 ```
 
-### 同一行中包含多个宏
+### Multiple macros on the same line
 ```go
 	i! int {
 		fmt.Println(i)
@@ -90,7 +87,7 @@ func Far() error {
 	var _i0,_i1,_i2 int
 	_i0,_i1,_i2 = 1,2,3
 	{
-		var i = _i2 // 同一行中包含多个宏，从右向左展开。或者这是一个不好的写法，不应该支持？
+		var i = _i2 // Multiple macros on the same line expand from right to left. Or is this a bad spelling and shouldn't be supported?
 		fmt.Println(i)
 	}
 	{
@@ -104,5 +101,5 @@ func Far() error {
 	*/
 ```
 
-### 总结
-不支持闭包，相互嵌套，goto，顶层continue，顶层break，Label 等，仅仅只是一个简化重复语句的语法糖
+### Other
+Does not support closures, nesting, goto, top-level continue, top-level break, Label, etc., just a syntactic sugar to simplify repeated statements
